@@ -42,13 +42,19 @@ class Map(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_P:
-            self.params['spn'] = ','.join(list(map(lambda x: str(float(x) + 0.001)
-            if float(x) < 50 else x, self.params['spn'].split(','))))
+            self.change_scale_plus()
         elif event.key() == Qt.Key_M:
-            self.params['spn'] = ','.join(list(map(lambda x: str(float(x) - 0.001)
-            if float(x) > 0 else x, self.params['spn'].split(','))))
+            self.change_scale_minus()
         self.getImage()
         self.show_map()
+
+    def change_scale_plus(self):
+        self.params['spn'] = ','.join(list(map(lambda x: str(float(x) + 0.001)
+        if float(x) < 50 else x, self.params['spn'].split(','))))
+
+    def change_scale_minus(self):
+        self.params['spn'] = ','.join(list(map(lambda x: str(float(x) - 0.001)
+        if float(x) > 0 else x, self.params['spn'].split(','))))
 
     def closeEvent(self, event):
         os.remove(self.map_file)
