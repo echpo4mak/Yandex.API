@@ -11,17 +11,19 @@ class Map(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('main.ui', self)
-        self.getImage()
-        self.show_map()
 
-    def getImage(self):
-        params = {
+        self.params = {
             'll': '37.530887,55.703118',
             'spn': '0.002,0.002',
             'l': 'map',
             'size': '650,450'
         }
-        response = requests.get('http://static-maps.yandex.ru/1.x/', params=params)
+
+        self.getImage()
+        self.show_map()
+
+    def getImage(self):
+        response = requests.get('http://static-maps.yandex.ru/1.x/', params=self.params)
 
         if not response:
             print("Ошибка выполнения запроса:")
@@ -32,16 +34,14 @@ class Map(QMainWindow):
         with open(self.map_file, "wb") as file:
             file.write(response.content)
 
-        self.coords.setText(f'Координаты: {params["ll"]}')
-
     def show_map(self):
         self.pixmap = QPixmap(self.map_file)
-        self.image.move(10, 75)
-        self.image.resize(650, 450)
         self.image.setPixmap(self.pixmap)
+        self.coords.setText(f'Координаты: {self.params["ll"]}')
 
     def closeEvent(self, event):
         os.remove(self.map_file)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
