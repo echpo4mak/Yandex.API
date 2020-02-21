@@ -3,6 +3,7 @@ import sys
 
 import requests
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
 from PyQt5 import uic
 
@@ -38,6 +39,16 @@ class Map(QMainWindow):
         self.pixmap = QPixmap(self.map_file)
         self.image.setPixmap(self.pixmap)
         self.coords.setText(f'Координаты: {self.params["ll"]}')
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_P:
+            self.params['spn'] = ','.join(list(map(lambda x: str(float(x) + 0.001)
+            if float(x) < 50 else x, self.params['spn'].split(','))))
+        elif event.key() == Qt.Key_M:
+            self.params['spn'] = ','.join(list(map(lambda x: str(float(x) - 0.001)
+            if float(x) > 0 else x, self.params['spn'].split(','))))
+        self.getImage()
+        self.show_map()
 
     def closeEvent(self, event):
         os.remove(self.map_file)
