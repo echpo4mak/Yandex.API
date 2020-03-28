@@ -2,6 +2,7 @@ import os
 import sys
 
 import requests
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
@@ -28,12 +29,12 @@ class Map(QMainWindow):
 
         if not response:
             print("Ошибка выполнения запроса:")
-            print("Http статус:", response.status_code, "(", response.reason, ")")
+            print("Http статус: ", response.status_code, " (", response.reason, ")", sep='')
             sys.exit(1)
 
         self.map_file = "map.png"
-        with open(self.map_file, "wb") as file:
-            file.write(response.content)
+        with open(self.map_file, "wb") as f:
+            f.write(response.content)
 
     def show_map(self):
         self.pixmap = QPixmap(self.map_file)
@@ -52,6 +53,26 @@ class Map(QMainWindow):
 
     def closeEvent(self, event):
         os.remove(self.map_file)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Up:
+            self.move_map(0, 1)
+        elif event.key() == Qt.Key_Down:
+            self.move_map(0, -1)
+        elif event.key() == Qt.Key_Left:
+            self.move_map(-1, 0)
+        elif event.key() == Qt.Key_Right:
+            self.move_map(1, 0)
+
+    def move_map(self, x, y):
+        x_shift = float(self.params['spn'].split(',')[0]) * x
+        y_shift = float(self.params['spn'].split(',')[1]) * y
+        new_ll = self.params['ll'].split(',')
+        new_ll[0] = float(new_ll[0]) + x_shift
+        new_ll[1] = float(new_ll[1]) + y_shift
+        self.params['ll'] = ','.join(map(str, new_ll))
+        self.getImage()
+        self.show_map()
 
 
 if __name__ == '__main__':
