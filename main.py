@@ -21,6 +21,31 @@ class Map(QMainWindow):
             'size': '650,450'
         }
 
+        self.geocoder_params = {
+            'apikey': '40d1649f-0493-4b70-98ba-98533de7710b',
+            'geocode': None,
+            'format': 'json'
+        }
+
+        self.find_button.clicked.connect(self.find_address)
+
+        self.getImage()
+        self.show_map()
+
+    def find_address(self):
+        self.geocoder_params['geocode'] = self.address_input.text()
+        geocoder_response = requests.get('http://geocode-maps.yandex.ru/1.x/', params=self.geocoder_params)
+
+        if not geocoder_response:
+            print("Ошибка выполнения запроса:")
+            print("Http статус: ", geocoder_response.status_code, " (", geocoder_response.reason, ")", sep='')
+            sys.exit(1)
+
+        json_response = geocoder_response.json()
+        toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
+        self.params['ll'] = toponym["Point"]["pos"].replace(' ', ',')
+        self.params['pt'] = self.params['ll'] + ',pm2rdm'
+
         self.getImage()
         self.show_map()
 
