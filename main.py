@@ -54,8 +54,8 @@ class Map(QMainWindow):
             self.move_map(1, 0)
 
     def move_map(self, x, y):
-        x_shift = 0.0001 * x
-        y_shift = 0.0001 * y
+        x_shift = float(self.params['spn'].split(',')[0]) * x
+        y_shift = float(self.params['spn'].split(',')[1]) * y
         new_ll = self.params['ll'].split(',')
         new_ll[0] = float(new_ll[0]) + x_shift
         new_ll[1] = float(new_ll[1]) + y_shift
