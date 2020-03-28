@@ -44,6 +44,7 @@ class Map(QMainWindow):
         json_response = geocoder_response.json()
         toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
         self.params['ll'] = toponym["Point"]["pos"].replace(' ', ',')
+        self.params['pt'] = self.params['ll'] + ',pm2rdm'
 
         self.getImage()
         self.show_map()
