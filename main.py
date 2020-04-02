@@ -4,7 +4,7 @@ import sys
 import requests
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
 
 
@@ -19,7 +19,10 @@ class Map(QMainWindow):
             'l': 'map',
             'size': '650,450'
         }
-
+        self.map_btn.toggled.connect(self.layerChange)
+        self.map_btn.setChecked(True)
+        self.sat_btn.toggled.connect(self.layerChange)
+        self.hyb_btn.toggled.connect(self.layerChange)
         self.getImage()
         self.show_map()
 
@@ -47,6 +50,16 @@ class Map(QMainWindow):
         elif event.key() == Qt.Key_M:
             self.params['spn'] = ','.join(list(map(lambda x: str(float(x) - 0.001)
             if float(x) > 0 else x, self.params['spn'].split(','))))
+        self.getImage()
+        self.show_map()
+
+    def layerChange(self):
+        if self.sender() == self.map_btn:
+            self.params['l'] = 'map'
+        elif self.sender() == self.sat_btn:
+            self.params['l'] = 'sat'
+        elif self.sender() == self.hyb_btn:
+            self.params['l'] = 'sat,skl'
         self.getImage()
         self.show_map()
 
