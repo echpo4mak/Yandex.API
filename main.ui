@@ -72,6 +72,40 @@
      <string>Координаты: 0,0</string>
     </property>
    </widget>
+
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>170</y>
+      <width>141</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QRadioButton" name="map_btn">
+       <property name="text">
+        <string>map</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="sat_btn">
+       <property name="text">
+        <string>satellite</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="hyb_btn">
+       <property name="text">
+        <string>hybrid</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+
    <widget class="QLineEdit" name="address_input">
     <property name="geometry">
      <rect>
@@ -131,6 +165,7 @@
     <property name="text">
      <string>Найти</string>
     </property>
+
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -139,7 +174,7 @@
      <x>0</x>
      <y>0</y>
      <width>976</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
