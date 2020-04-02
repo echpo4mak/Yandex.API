@@ -41,10 +41,10 @@ class Map(QMainWindow):
         self.coords.setText(f'Координаты: {self.params["ll"]}')
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_P:
-            self.change_scale_plus()
-        elif event.key() == Qt.Key_M:
+        if event.key() == Qt.Key_PageUp:
             self.change_scale_minus()
+        elif event.key() == Qt.Key_PageDown:
+            self.change_scale_plus()
         self.getImage()
         self.show_map()
 
