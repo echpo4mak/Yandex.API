@@ -33,6 +33,7 @@ class Map(QMainWindow):
         }
 
         self.find_button.clicked.connect(self.find_address)
+        self.discard_btn.clicked.connect(self.discard_query)
 
         self.getImage()
         self.show_map()
@@ -50,7 +51,6 @@ class Map(QMainWindow):
         toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
         self.params['ll'] = toponym["Point"]["pos"].replace(' ', ',')
         self.params['pt'] = self.params['ll'] + ',pm2rdm'
-        
         self.getImage()
         self.show_map()
 
@@ -109,6 +109,11 @@ class Map(QMainWindow):
             self.change_scale_minus()
         elif event.key() == Qt.Key_PageDown:
             self.change_scale_plus()
+
+    def discard_query(self):
+        self.params['pt'] = ''
+        self.getImage()
+        self.show_map()
 
     def move_map(self, x, y):
         x_shift = float(self.params['spn'].split(',')[0]) * x
