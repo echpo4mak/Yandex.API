@@ -5,7 +5,7 @@ import requests
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5 import uic
 
 
@@ -33,6 +33,7 @@ class Map(QMainWindow):
         }
 
         self.find_button.clicked.connect(self.find_address)
+        self.discard_btn.clicked.connect(self.discard_query)
 
         self.getImage()
         self.show_map()
@@ -50,7 +51,8 @@ class Map(QMainWindow):
         toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
         self.params['ll'] = toponym["Point"]["pos"].replace(' ', ',')
         self.params['pt'] = self.params['ll'] + ',pm2rdm'
-        
+        toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"].split(', ')
+        self.address_output.setText('\n'.join(toponym_address))
         self.getImage()
         self.show_map()
 
@@ -109,6 +111,12 @@ class Map(QMainWindow):
             self.change_scale_minus()
         elif event.key() == Qt.Key_PageDown:
             self.change_scale_plus()
+
+    def discard_query(self):
+        self.params['pt'] = ''
+        self.address_output.setText('Полный адрес')
+        self.getImage()
+        self.show_map()
 
     def move_map(self, x, y):
         x_shift = float(self.params['spn'].split(',')[0]) * x
