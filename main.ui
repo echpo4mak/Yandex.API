@@ -191,6 +191,22 @@
      <string>Полный адрес</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="post_switch">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>500</y>
+      <width>221</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Показывать почтовый индекс</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -198,7 +214,7 @@
      <x>0</x>
      <y>0</y>
      <width>976</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
