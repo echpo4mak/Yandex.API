@@ -26,6 +26,8 @@ class Map(QMainWindow):
         self.sat_btn.toggled.connect(self.layerChange)
         self.hyb_btn.toggled.connect(self.layerChange)
 
+        self.post_switch.toggled.connect(self.alter_post)
+
         self.geocoder_params = {
             'apikey': '40d1649f-0493-4b70-98ba-98533de7710b',
             'geocode': None,
@@ -48,13 +50,33 @@ class Map(QMainWindow):
             sys.exit(1)
 
         json_response = geocoder_response.json()
-        toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
-        self.params['ll'] = toponym["Point"]["pos"].replace(' ', ',')
-        self.params['pt'] = self.params['ll'] + ',pm2rdm'
-        toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"].split(', ')
-        self.address_output.setText('\n'.join(toponym_address))
-        self.getImage()
-        self.show_map()
+        try:
+            toponym = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']
+
+            self.cur_toponym = toponym
+            self.params['ll'] = toponym["Point"]["pos"].replace(' ', ',')
+            self.params['pt'] = self.params['ll'] + ',pm2rdm'
+            toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"].split(', ')
+            if self.post_switch.isChecked():
+                try:
+                    toponym_address.append(f'Почтовый индекс: {toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]}')
+                except KeyError:
+                    toponym_address.append('Почтовый индекс не найден')
+            self.address_output.setText('\n'.join(toponym_address))
+            self.getImage()
+            self.show_map()
+        except IndexError:
+            self.address_output.setText("Ничего не найдено.")
+
+    def alter_post(self):
+        if self.post_switch.isChecked():
+            try:
+                new_text = self.address_output.text() + f'\nПочтовый индекс: {self.cur_toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]}'
+            except KeyError:
+                new_text = self.address_output.text() + '\nПочтовый индекс не найден'
+        else:
+            new_text = '\n'.join(self.address_output.text().split('\n')[:-1])
+        self.address_output.setText(new_text)
 
     def getImage(self):
         response = requests.get('http://static-maps.yandex.ru/1.x/', params=self.params)
@@ -114,6 +136,7 @@ class Map(QMainWindow):
 
     def discard_query(self):
         self.params['pt'] = ''
+        self.cur_toponym = None
         self.address_output.setText('Полный адрес')
         self.getImage()
         self.show_map()
